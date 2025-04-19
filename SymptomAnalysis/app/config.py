@@ -4,10 +4,10 @@ Configuration settings for the application
 import os
 
 # API keys and environment variables
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-ASTRA_DB_API_ENDPOINT = os.environ.get("ASTRA_DB_API_ENDPOINT")
-ASTRA_DB_REGION = os.environ.get("ASTRA_DB_REGION")
-ASTRA_DB_APPLICATION_TOKEN = os.environ.get("ASTRA_DB_APPLICATION_TOKEN")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
+ASTRA_DB_REGION = os.getenv("ASTRA_DB_REGION")
+ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
 COLLECTION_NAME = "symptom_vectors"
 
 print(f"groq : {GROQ_API_KEY} \n Api:{ASTRA_DB_API_ENDPOINT}")
