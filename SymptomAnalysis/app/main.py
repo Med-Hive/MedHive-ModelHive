@@ -1,36 +1,27 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
-from app.core.config import get_settings
-from app.routes import chat, health, root
-import time
-from app.core.logging_config import setup_logging
-import psutil
-import os
+"""
+Main FastAPI application for the Symptom Analysis Chatbot
+"""
+import logging
+from fastapi import FastAPI
+from app.api.routes import router
+from app.services.database import initialize_database
 
-# Initialize logging
-setup_logging(log_path=os.path.join(os.getcwd(), "logs"))
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-settings = get_settings()
+# Initialize FastAPI app
+app = FastAPI(title="Symptom Analysis Chatbot")
 
-app = FastAPI(
-    title="MedHive Symptom Analysis API",
-    description="AI-powered medical symptom analysis and diagnosis assistance",
-    version="1.0.0"
-)
+# Include API routes
+app.include_router(router)
 
-# Include routers
-app.include_router(root.router)
-app.include_router(health.router, prefix="/health", tags=["Health"])
-app.include_router(chat.router, prefix="/chat", tags=["Chat"])
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize services on startup"""
-    # Ensure logs directory exists
-    os.makedirs(os.path.join(os.getcwd(), "logs"), exist_ok=True)
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    pass
+if __name__ == "__main__":
+    import config
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
